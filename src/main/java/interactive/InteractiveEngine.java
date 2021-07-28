@@ -17,6 +17,8 @@ public class InteractiveEngine {
     private static final String WRONG_DOCNO_MSG = "Your input docno is invalid or not among the results. Please reenter it.";
     private static final String QUIT_MSG = "Quit.";
 
+    private static final int NANO_TO_SECOND = 1000000000;
+
     // store the ranking results in case the user want to see the complete document
     private static final Set<String> rankingResultDocnos = new HashSet<>(10);
     private static final Scanner userInput = new Scanner(System.in);
@@ -42,6 +44,11 @@ public class InteractiveEngine {
             System.out.println(NEW_QUERY_PROMPT_MSG);
             rankingResultDocnos.clear();
             String query = userInput.nextLine();    // excluding any line separator at the end.
+
+            // https://stackoverflow.com/questions/180158/how-do-i-time-a-methods-execution-in-java
+            // start the timer
+            long startTime = System.nanoTime();
+
             // invokes the ranking engine, displays the result, and update rankingResultDocnos;
             List<String> top10Docnos = RankingEngine.getTop10DocnosOfQuery(query, indexBaseDirBackSlash,
                     idToDocnoMap, lexiconTermToId, invertedIndex);
@@ -78,11 +85,19 @@ public class InteractiveEngine {
                 System.out.printf("%d. %s (%s)\n%s (%s)\n", i,
                         headline, Utility.getNaturalDate(docno), queryBiasedSnippet, docno);
             }
+
+            // calculate retrieval and snippet-generation time
+            long endTime = System.nanoTime();
+            long duration = endTime - startTime;
+            double durationInSecond = (double) duration / (double) NANO_TO_SECOND;
+            System.out.printf("Retrieval took %s seconds\n", durationInSecond);
+
             // TODO: remove it. for test only
 //            for (String docno : top10Docnos) {
 //                System.out.println(docno);
 //            }
 
+            // next prompt
             System.out.println(NEXT_STEP_PROMPT_MSG);
             String choice = userInput.nextLine().trim();
 
