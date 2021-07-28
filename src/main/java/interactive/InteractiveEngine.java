@@ -58,7 +58,11 @@ public class InteractiveEngine {
                 String[] split = metadata.split("\n");
                 String id = split[0];
                 String docLen = split[1];
-                String headline = metadata.substring(id.length() + 1 + docLen.length() + 1).trim(); // including a leading '\n'
+                String headline = metadata.substring(id.length() + 1 + docLen.length() + 1).trim(); // not include a leading '\n'
+                if (headline.isEmpty()) {
+                    String rawDocPath = indexBaseDirBackSlash + "raw/" + dateHierarchy + "/" + docno;
+                    headline = getWholeContentFromGzipReader(rawDocPath).substring(0, 50) + " ...";
+                }
 
                 String queryBiasedSnippet = "Query-Biased Snippet";
                 System.out.printf("%d. %s (%s)\n%s (%s)\n", i,
