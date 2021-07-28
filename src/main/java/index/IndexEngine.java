@@ -299,6 +299,7 @@ public class IndexEngine {
             try (Writer writer = new OutputStreamWriter(new GZIPOutputStream(fos), StandardCharsets.UTF_8)) {
                 writer.write(content);
                 writer.write('\n'); // new line at the end of the file
+                writer.flush();
             }
         }
     }
