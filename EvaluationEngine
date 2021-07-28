@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# args
+# {qrels file path} {results dir path} {index dir path}
+java -cp target evaluation.EvaluationEngine $1 $2 $3

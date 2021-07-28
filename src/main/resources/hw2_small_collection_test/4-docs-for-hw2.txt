@@ -1,0 +1,172 @@
+<DOC>
+<DOCNO> LA060521-0001 </DOCNO>
+<DOCID> 28803 </DOCID>
+<DATE>
+<P>
+March 10, 1989, Friday, Home Edition 
+</P>
+</DATE>
+<SECTION>
+<P>
+Metro; Part 2; Page 2; Column 5; Metro Desk 
+</P>
+</SECTION>
+<LENGTH>
+<P>
+67 words 
+</P>
+</LENGTH>
+<HEADLINE>
+<P>
+(ECE) 650 
+</P>
+<P>
+Methods and Tools for Software Engineering 
+</P>
+</HEADLINE>
+<TEXT>
+<P>
+Software Systems - Systems programming and operating systems. 
+</P>
+<P>
+Mathematical logic - propositional & predicate logic. 
+</P>
+</TEXT>
+<GRAPHIC>
+<P>
+Graduate students only.
+</P>
+</GRAPHIC>
+<TYPE>
+<P>
+Column 
+</P>
+</TYPE>
+</DOC>
+<DOC>
+<DOCNO> LA060521-0002 </DOCNO>
+<DOCID> 125362 </DOCID>
+<DATE>
+<P>
+October 25, 1989, Wednesday, Home Edition 
+</P>
+</DATE>
+<SECTION>
+<P>
+Calendar; Part F; Page 2; Column 1; Entertainment Desk 
+</P>
+</SECTION>
+<LENGTH>
+<P>
+103 words 
+</P>
+</LENGTH>
+<HEADLINE>
+<P>
+(ECE) 652 Methods and Principles of Safety-critical Embedded Software 
+</P>
+</HEADLINE>
+<BYLINE>
+<P>
+By ALEENE MacMINN, Arts and entertainment reports from The Times, national and 
+international news services and the nation's press. 
+</P>
+</BYLINE>
+<TEXT>
+<P>
+The application of formal test methods.
+</P>
+</TEXT>
+<GRAPHIC>
+<P>
+Related Background:
+</P>
+<P>
+Operating systems and programming skills.
+</P>
+</GRAPHIC>
+<TYPE>
+<P>
+Column; Brief 
+</P>
+</TYPE>
+</DOC>
+<DOC>
+<DOCNO> LA060521-0003 </DOCNO>
+<DOCID> 225692 </DOCID>
+<DATE>
+<P>
+May 29, 1990, Tuesday, San Diego County Edition 
+</P>
+</DATE>
+<SECTION>
+<P>
+Metro; Part B; Page 2; Column 5; Metro Desk 
+</P>
+</SECTION>
+<LENGTH>
+<P>
+103 words 
+</P>
+</LENGTH>
+<HEADLINE>
+<P>
+(ECE) 653 Software Testing
+</P>
+</HEADLINE>
+<TEXT>
+<P>
+Systematic testing of software systems. Software reliability and availability.
+</P>
+</TEXT>
+<TYPE>
+<P>
+Column; Brief 
+</P>
+</TYPE>
+</DOC>
+<DOC>
+<DOCNO> LA060521-0004 </DOCNO>
+<DOCID> 309592 </DOCID>
+<DATE>
+<P>
+November 18, 1990, Sunday, Home Edition 
+</P>
+</DATE>
+<SECTION>
+<P>
+Calendar; Page 59; Calendar Desk 
+</P>
+</SECTION>
+<LENGTH>
+<P>
+85 words 
+</P>
+</LENGTH>
+<HEADLINE>
+<P>
+(ECE) 654 Software Reliability Engineering 
+</P>
+</HEADLINE>
+<BYLINE>
+<P>
+By TIMOTHY MANGAN 
+</P>
+</BYLINE>
+<TEXT>
+<P>
+Reliable software.
+</P>
+<P>
+Secure software. 
+</P>
+<P>
+Prerequisite: ece-650.
+</P>
+</TEXT>
+<TYPE>
+<P>
+Recording Review; Column 
+</P>
+</TYPE>
+</DOC>

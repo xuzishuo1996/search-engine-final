@@ -1,0 +1,6 @@
+#!/bin/bash
+
+# args
+# 1. path of the input .gz data file
+# 2. path to store metadata and raw dos
+java -cp target index.IndexEngine $1 $2

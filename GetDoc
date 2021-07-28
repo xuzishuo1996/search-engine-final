@@ -1,0 +1,7 @@
+#!/bin/bash
+
+# args
+# 1. path that stores metadata and raw dos
+# 2. type: "docno" or "id"
+# 3. value of docno or id
+java -cp target retriever.GetDoc $1 $2 $3
