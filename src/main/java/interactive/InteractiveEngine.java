@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static common.Utility.getGzipReader;
+
 public class InteractiveEngine {
     private static final String NEW_QUERY_PROMPT_MSG = "Please enter a new query.";
     private static final String NEXT_STEP_PROMPT_MSG = "Please type in the number of a document to view, " +
@@ -46,10 +48,26 @@ public class InteractiveEngine {
             rankingResultDocnos.addAll(top10Docnos);
 
             // TODO: generate the snippets
-            // TODO: remove it. for test only
-            for (String docno : top10Docnos) {
-                System.out.println(docno);
+            for (int i = 1; i <= top10Docnos.size(); ++i) {
+                String docno = top10Docnos.get(i);
+
+                // get the headline from the metadata
+                String dateHierarchy = Utility.getDateFolderHierarchy(docno);
+                String docMetadataPath = metadataPath + dateHierarchy + "/" + docno;
+                String metadata = getWholeContentFromGzipReader(docMetadataPath);
+                String[] split = metadata.split("\n");
+                String id = split[0];
+                String docLen = split[1];
+                String headline = metadata.substring(id.length() + 1 + docLen.length() + 1).trim(); // including a leading '\n'
+
+                String queryBiasedSnippet = "Query-Biased Snippet";
+                System.out.printf("%d. %s (%s)\n%s (%s)\n", i,
+                        headline, Utility.getNaturalDate(docno), queryBiasedSnippet, docno);
             }
+            // TODO: remove it. for test only
+//            for (String docno : top10Docnos) {
+//                System.out.println(docno);
+//            }
 
             System.out.println(NEXT_STEP_PROMPT_MSG);
             String choice = userInput.nextLine().trim();
@@ -83,8 +101,10 @@ public class InteractiveEngine {
         }
     }
 
-    private static String getWholeContentFromGzipReader(String rawDocPath) throws IOException {
-        BufferedReader reader = Utility.getGzipReader(rawDocPath);
+
+
+    private static String getWholeContentFromGzipReader(String filepath) throws IOException {
+        BufferedReader reader = Utility.getGzipReader(filepath);
         StringBuilder sb = new StringBuilder();
         List<String> lines = reader.lines().collect(Collectors.toList());
         for (String line : lines) {
