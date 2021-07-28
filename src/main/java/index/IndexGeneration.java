@@ -66,16 +66,7 @@ public class IndexGeneration {
         List<String> res = new ArrayList<>();
         for (String s : split) {
             if (!s.equals("")) {
-
-                // stemmed version
-                String lowerCase = s.toLowerCase();
-                String stemmed = PorterStemmer.stem(lowerCase);
-                if (!stemmed.isEmpty()) {
-                    res.add(stemmed);
-                }
-
-//                // non-stemmed version
-//                res.add(s.toLowerCase());
+                res.add(s.toLowerCase());
             }
         }
         return res;
@@ -87,18 +78,8 @@ public class IndexGeneration {
         Map<String, Integer> termCntMap = new HashMap<>();
         for (String term : split) {
             if (!term.equals("")) {
-
-                // stemmed version
-                String lowerCase = term.toLowerCase();
-                String stemmed = PorterStemmer.stem(lowerCase);
-                if (!stemmed.isEmpty()) {
-                    termCntMap.putIfAbsent(stemmed, 0);
-                    termCntMap.put(stemmed, termCntMap.get(stemmed) + 1);
-                }
-
-//                // non-stemmed version
-//                termCntMap.putIfAbsent(term, 0);
-//                termCntMap.put(term, termCntMap.get(term) + 1);
+                termCntMap.putIfAbsent(term, 0);
+                termCntMap.put(term, termCntMap.get(term) + 1);
             }
         }
         return termCntMap;
