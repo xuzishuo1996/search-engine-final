@@ -47,24 +47,34 @@ public class InteractiveEngine {
                     idToDocnoMap, lexiconTermToId, invertedIndex);
             rankingResultDocnos.addAll(top10Docnos);
 
-            // TODO: generate the snippets
+
             for (int i = 1; i <= top10Docnos.size(); ++i) {
-                String docno = top10Docnos.get(i);
+                String docno = top10Docnos.get(i - 1);
+                String dateHierarchy = Utility.getDateFolderHierarchy(docno);
+
+                // TODO: generate the snippets
+                String queryBiasedSnippet = "Query-Biased Snippet";
+                String rawDocPath = indexBaseDirBackSlash + "raw/" + dateHierarchy + "/" + docno;
 
                 // get the headline from the metadata
-                String dateHierarchy = Utility.getDateFolderHierarchy(docno);
                 String docMetadataPath = metadataPath + dateHierarchy + "/" + docno;
                 String metadata = getWholeContentFromGzipReader(docMetadataPath);
                 String[] split = metadata.split("\n");
                 String id = split[0];
                 String docLen = split[1];
-                String headline = metadata.substring(id.length() + 1 + docLen.length() + 1).trim(); // not include a leading '\n'
-                if (headline.isEmpty()) {
-                    String rawDocPath = indexBaseDirBackSlash + "raw/" + dateHierarchy + "/" + docno;
-                    headline = getWholeContentFromGzipReader(rawDocPath).substring(0, 50) + " ...";
+                String headline = null;
+                int headlinePos = id.length() + docLen.length() + 2;    // +2: two '\n'
+                if (metadata.length() <= headlinePos) {
+                    if (queryBiasedSnippet.length() > 50) {
+                        headline = queryBiasedSnippet.substring(0, 50) + " ...";
+                    } else {
+                        headline = queryBiasedSnippet + " ...";
+                    }
+                } else {
+                    // +2: two
+                    headline = metadata.substring(headlinePos).trim(); // not include a leading '\n'
                 }
 
-                String queryBiasedSnippet = "Query-Biased Snippet";
                 System.out.printf("%d. %s (%s)\n%s (%s)\n", i,
                         headline, Utility.getNaturalDate(docno), queryBiasedSnippet, docno);
             }
