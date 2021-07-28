@@ -16,7 +16,7 @@ public class InteractiveEngine {
     private static final Set<String> rankingResultDocnos = new HashSet<>(10);
     private static final Scanner userInput = new Scanner(System.in);
 
-    public static void main() throws IOException {
+    public static void main(String[] args) throws IOException {
 //        boolean quitFlag = false;
 //        boolean newQueryFlag = true;
         while (true) {
@@ -37,13 +37,12 @@ public class InteractiveEngine {
 
             // the user want to see the complete content of a result, input is a docno
             if (!choice.equals("N")) {
-                String docnoToFetch = userInput.nextLine().trim();
-                while (!rankingResultDocnos.contains(docnoToFetch)) {
+                while (!rankingResultDocnos.contains(choice)) {
                     System.out.println(WRONG_DOCNO_MSG);
-                    docnoToFetch = userInput.nextLine().trim();
-                    if (docnoToFetch.equals("N")) {
+                    choice = userInput.nextLine().trim();
+                    if (choice.equals("N")) {
                         break;
-                    } else if (docnoToFetch.equals("Q")) {
+                    } else if (choice.equals("Q")) {
                         System.out.println(QUIT_MSG);
                         System.exit(0);
                     }
