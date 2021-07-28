@@ -10,50 +10,16 @@ import java.io.IOException;
 import java.util.*;
 
 public class RankingEngine {
-    private static final String runTag = "z463xu";
+//    private static final String runTag = "z463xu";
     private static Map<Integer, Integer> docIdToLenMap = new HashMap<>();
 
-    public static void main(String[] args) throws IOException {
-        String indexBaseDir = args[0];
-        String queryFilepath = args[1];
-        String outputFilePath = args[2];
+    public static List<String> getTop10DocnosOfQuery(String query, String indexBaseDirBackSlash,
+                                                     HashMap<Integer, String> idToDocnoMap,
+                                                     HashMap<String, Integer> lexiconTermToId,
+                                                     List<List<Integer>> invertedIndex) throws IOException {
+        List<String> top10Docnos = new ArrayList<>(10);
 
-        String indexBaseDirBackSlash = indexBaseDir.charAt(indexBaseDir.length() - 1) == '/' ?
-                indexBaseDir : indexBaseDir + '/';
-        String metadataPath = indexBaseDirBackSlash + "metadata/";
-        String idToDocnoMapPath = metadataPath + "idToDocnoMap.ser";
-        String invertedIndexPath = metadataPath + "invertedIndex.ser";
-        String lexiconTermToIdPath = metadataPath + "lexiconTermToId.ser";
-
-        BufferedReader queryReader = Utility.getPlainReader(queryFilepath);
-        BufferedWriter writer = Utility.getPlainWriter(outputFilePath);
-
-        // deserialize the idToDocnoMap
-        HashMap<Integer, String> idToDocnoMap = (HashMap<Integer, String>) Utility.deserialize(idToDocnoMapPath);
-        HashMap<String, Integer> lexiconTermToId = (HashMap<String, Integer>) Utility.deserialize(lexiconTermToIdPath);
-        List<List<Integer>> invertedIndex = (List<List<Integer>>) Utility.deserialize(invertedIndexPath);
-
-        while (true) {
-            handleNextQuery(indexBaseDirBackSlash, queryReader, writer, idToDocnoMap, invertedIndex, lexiconTermToId);
-        }
-    }
-
-    public static void handleNextQuery(String indexBaseDirBackSlash, BufferedReader queryReader, BufferedWriter writer,
-                                       HashMap<Integer, String> idToDocnoMap,
-                                       List<List<Integer>> invertedIndex,
-                                       HashMap<String, Integer> lexiconTermToId) throws IOException {
-        // first line is topic id; second is the query
-        String line = queryReader.readLine();
-        // EOF
-        if (line == null) {
-            // EOF handling
-            queryReader.close();
-            writer.close();
-            System.exit(0);
-        }
-        String topicId = line.trim();
-        String tokensLine = queryReader.readLine();
-        Map<String, Integer> queryTokenFreqMap = IndexGeneration.createTermCntMapForQuery(tokensLine);
+        Map<String, Integer> queryTokenFreqMap = IndexGeneration.createTermCntMapForQuery(query);
         Map<Integer, Double> docScoreMap = new HashMap<>();
 
         // BM25 algo: term-at-a-time for scoring docs.
@@ -91,12 +57,11 @@ public class RankingEngine {
         entryList.sort((e1, e2) -> e2.getValue().compareTo(e1.getValue()));
 
         // write output
-        for (int i = 0; i < Math.min(entryList.size(), 1000); ++i) {
+        for (int i = 0; i < Math.min(entryList.size(), 10); ++i) {
             Map.Entry<Integer, Double> docIdScorePair = entryList.get(i);
-            // format: topicId "Q0" docno rank score runTag
-            String entry = String.format("%s Q0 %s %s %s %s\n",
-                    topicId, idToDocnoMap.get(docIdScorePair.getKey()), i + 1, docIdScorePair.getValue(), runTag);
-            writer.write(entry);
+            String docno = idToDocnoMap.get(docIdScorePair.getKey());
+            top10Docnos.add(docno);
         }
+        return top10Docnos;
     }
 }

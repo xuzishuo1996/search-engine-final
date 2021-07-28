@@ -1,6 +1,7 @@
 package interactive;
 
 import common.Utility;
+import ranking.RankingEngine;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -30,17 +31,25 @@ public class InteractiveEngine {
         String invertedIndexPath = metadataPath + "invertedIndex.ser";
         String lexiconTermToIdPath = metadataPath + "lexiconTermToId.ser";
 
-//        // deserialization
-//        HashMap<Integer, String> idToDocnoMap = (HashMap<Integer, String>) Utility.deserialize(idToDocnoMapPath);
-//        HashMap<String, Integer> lexiconTermToId = (HashMap<String, Integer>) Utility.deserialize(lexiconTermToIdPath);
-//        List<List<Integer>> invertedIndex = (List<List<Integer>>) Utility.deserialize(invertedIndexPath);
+        // deserialization
+        HashMap<Integer, String> idToDocnoMap = (HashMap<Integer, String>) Utility.deserialize(idToDocnoMapPath);
+        HashMap<String, Integer> lexiconTermToId = (HashMap<String, Integer>) Utility.deserialize(lexiconTermToIdPath);
+        List<List<Integer>> invertedIndex = (List<List<Integer>>) Utility.deserialize(invertedIndexPath);
 
         while (true) {
             System.out.println(NEW_QUERY_PROMPT_MSG);
             rankingResultDocnos.clear();
             String query = userInput.nextLine();    // excluding any line separator at the end.
-            // TODO: invokes the ranking engine, displays the result, and update rankingResultDocnos;
+            // invokes the ranking engine, displays the result, and update rankingResultDocnos;
+            List<String> top10Docnos = RankingEngine.getTop10DocnosOfQuery(query, indexBaseDirBackSlash,
+                    idToDocnoMap, lexiconTermToId, invertedIndex);
+            rankingResultDocnos.addAll(top10Docnos);
 
+            // TODO: generate the snippets
+            // TODO: remove it. for test only
+            for (String docno : top10Docnos) {
+                System.out.println(docno);
+            }
 
             System.out.println(NEXT_STEP_PROMPT_MSG);
             String choice = userInput.nextLine().trim();
@@ -66,7 +75,7 @@ public class InteractiveEngine {
                         System.exit(0);
                     }
                 }
-                // TODO: fetch the complete content of the doc
+                // fetch the complete content of the doc
                 String dateHierarchy = Utility.getDateFolderHierarchy(choice);
                 String rawDocPath = indexBaseDirBackSlash + "raw/" + dateHierarchy + "/" + choice;
                 System.out.println(getWholeContentFromGzipReader(rawDocPath));
