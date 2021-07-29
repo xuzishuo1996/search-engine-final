@@ -26,7 +26,8 @@ public class SnippetEngine {
      */
     public String getSnippet(String rawDoc) {
         List<String> primitiveSentences = new ArrayList<>();
-        PriorityQueue<Sentence> pq = new PriorityQueue<>(Comparator.comparingInt(Sentence::getScore).reversed());
+        // pq: [score, sentence number pair]
+        PriorityQueue<int[]> pq = new PriorityQueue<>((o1, o2) -> o2[0] - o1[0]);   // in descending order of score
 
         int startPos = rawDoc.indexOf("<HEADLINE>");
         int endPos = rawDoc.indexOf("</HEADLINE>");
@@ -39,17 +40,17 @@ public class SnippetEngine {
         // get result: use 2 sentences
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < 2; ++i) {
-            int pos = pq.poll().getPosInDoc();
             if (i == 1) {
                 sb.append(" ");
             }
+            int pos = pq.poll()[1];
             sb.append(primitiveSentences.get(pos));
         }
         return sb.toString();
     }
 
     private void splitSentences(String para, List<String> primitiveSentences,
-                                PriorityQueue<Sentence> pq) {
+                                PriorityQueue<int[]> pq) {
         // ref: https://blog.csdn.net/qy20115549/article/details/107400321
         List<Integer> periodPos = getAllPos(para, '.');
         List<Integer> questionPos = getAllPos(para, '?');
@@ -58,11 +59,11 @@ public class SnippetEngine {
         // merge the results. TODO: could optimize. 3-way merge, priorityQueue. worth it? only a few positions.
         List<Integer> periodQuestionMerge = mergeSorted(periodPos, questionPos);
         List<Integer> pos = mergeSorted(exclamationPos, periodQuestionMerge);
-        
+
         List<String> splitSentences = new ArrayList<>();
         pos.add(-1);    // for the convenience to write code
         for (int i = 0; i < pos.size() - 1; ++i) {
-            splitSentences.add(para.substring(pos.get(i) + 1, pos.get(i + 1) + 1)); // include "[.?!]"
+            splitSentences.add(para.substring(pos.get(i) + 1, pos.get(i + 1) + 1)); // +1: include "[.?!]"
         }
         splitSentences.add(para.substring(pos.get(pos.size() - 1)) + 1);
 
@@ -72,9 +73,12 @@ public class SnippetEngine {
                 int num = primitiveSentences.size();
 
                 // TODO:
-                // tokenize it
-                // calculate the score
-                // put it into the priority queue
+                // TODO: tokenize it
+                List<String> tokensList = IndexGeneration.extractAlphanumerics(trimmed);
+                // TODO: calculate the score
+                int score = 0;
+                // TODO: put it into the priority queue
+                pq.add(new int[]{score, num});
             }
         }
     }
@@ -114,53 +118,53 @@ public class SnippetEngine {
         return res;
     }
 
-    class Sentence implements Comparable<Sentence> {
-        String primitiveSentence;
-        String tokenizedSentence;
-        int score;
-        int posInDoc = 0;
-
-        public Sentence(String primitiveSentence) {
-            this.primitiveSentence = primitiveSentence;
-        }
-
-        @Override
-        public int compareTo(Sentence o) {
-            return o.score - this.score;
-        }
-
-        public String getPrimitiveSentence() {
-            return primitiveSentence;
-        }
-
-        public void setPrimitiveSentence(String primitiveSentence) {
-            this.primitiveSentence = primitiveSentence;
-        }
-
-        public String getTokenizedSentence() {
-            return tokenizedSentence;
-        }
-
-        public void setTokenizedSentence(String tokenizedSentence) {
-            this.tokenizedSentence = tokenizedSentence;
-        }
-
-        public int getScore() {
-            return score;
-        }
-
-        public void setScore(int score) {
-            this.score = score;
-        }
-
-        public int getPosInDoc() {
-            return posInDoc;
-        }
-
-        public void setPosInDoc(int posInDoc) {
-            this.posInDoc = posInDoc;
-        }
-    }
+//    class Sentence implements Comparable<Sentence> {
+//        String primitiveSentence;
+//        String tokenizedSentence;
+//        int score;
+//        int posInDoc;
+//
+//        public Sentence(String primitiveSentence) {
+//            this.primitiveSentence = primitiveSentence;
+//        }
+//
+//        @Override
+//        public int compareTo(Sentence o) {
+//            return o.score - this.score;
+//        }
+//
+//        public String getPrimitiveSentence() {
+//            return primitiveSentence;
+//        }
+//
+//        public void setPrimitiveSentence(String primitiveSentence) {
+//            this.primitiveSentence = primitiveSentence;
+//        }
+//
+//        public String getTokenizedSentence() {
+//            return tokenizedSentence;
+//        }
+//
+//        public void setTokenizedSentence(String tokenizedSentence) {
+//            this.tokenizedSentence = tokenizedSentence;
+//        }
+//
+//        public int getScore() {
+//            return score;
+//        }
+//
+//        public void setScore(int score) {
+//            this.score = score;
+//        }
+//
+//        public int getPosInDoc() {
+//            return posInDoc;
+//        }
+//
+//        public void setPosInDoc(int posInDoc) {
+//            this.posInDoc = posInDoc;
+//        }
+//    }
 }
 
 
