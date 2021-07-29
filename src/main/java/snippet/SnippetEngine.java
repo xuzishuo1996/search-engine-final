@@ -8,12 +8,12 @@ public class SnippetEngine {
 
     private final String query;
     private final List<String> tokenizedQuery;
-    private final Set<String> uniqueQueryTerms;
+    private final Set<String> queryUniqueTerms;
 
     public SnippetEngine(String query) {
         this.query = query;
         this.tokenizedQuery = IndexGeneration.extractAlphanumerics(query);
-        this.uniqueQueryTerms = new HashSet<>(tokenizedQuery);
+        this.queryUniqueTerms = new HashSet<>(tokenizedQuery);
     }
 
     /**
@@ -110,17 +110,45 @@ public class SnippetEngine {
 
                 // tokenize it
                 List<String> tokensList = IndexGeneration.extractAlphanumerics(trimmed);
+
                 // TODO: calculate the score
-                int score = 0;
+                int score = calScore(tokensList);
+                // add 2 to the score for the first sentence; 1, if second; 0 otherwise.
+                if (num == 0) { // the first sentence in the doc
+                    score += 2;
+                } else if (num == 1) { // the second sentence in the doc
+                    score += 1;
+                }
+
                 // put it into the priority queue
                 pq.add(new int[]{score, num});
             }
         }
     }
 
-    private int calScore(List<String> tokensList) {
-        
-        return 0;
+    /**
+     * Scoring Scheme:
+     * Note: for convenience, the first part is moved into splitSentences().
+     * 1. Let l be 2 if S is the first sentence, 1, if second, 0 otherwise.
+     * 2. Let c be the number of wi that are query terms, including repetitions.
+     * 3. Let d be the number of distinct query terms that match some wi.
+     * 4. Identify the longest contiguous run of queries terms in S, say wj ... wj+k.
+     * Use a equal combination of l, c, d, k to derive a score value V.
+     */
+    private int calScore(List<String> sentenceTokensList) {
+        int c = 0, d = 0, k = 0;
+        Set<String> sentenceUniqueTerms = new HashSet<>();
+        for (String term : sentenceTokensList) {
+            if (queryUniqueTerms.contains(term)) {
+                ++c;
+                sentenceUniqueTerms.add(term);
+            }
+        }
+        d = sentenceUniqueTerms.size();
+
+        // TODO: calculate k
+
+        return c + d + k;
     }
 
     private List<Integer> getAllPos(String para, char c) {
