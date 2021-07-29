@@ -102,12 +102,18 @@ public class SnippetEngine {
         for (int i = 0; i < pos.size() - 1; ++i) {
             splitSentences.add(para.substring(pos.get(i) + 1, pos.get(i + 1) + 1)); // +1: include "[.?!]"
         }
-        splitSentences.add(para.substring(pos.get(pos.size() - 1)) + 1);
+        int lastSplitPos = pos.get(pos.size() - 1);
+        if (lastSplitPos < para.length() - 1) {
+            splitSentences.add(para.substring(lastSplitPos + 1));
+        }
 
         for (String s : splitSentences) {
             String trimmed = s.trim();  // does not alter the primitive string
             if (!trimmed.isEmpty()) {
+                // get the previous num of sentences, i.e, the pos of curr sentence in the primitive-sentences-list
                 int num = primitiveSentences.size();
+                // add it to the collection, for display
+                primitiveSentences.add(trimmed);
 
                 // tokenize it
                 List<String> tokensList = IndexGeneration.extractAlphanumerics(trimmed);
