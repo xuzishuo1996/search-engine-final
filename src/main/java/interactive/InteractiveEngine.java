@@ -125,7 +125,7 @@ public class InteractiveEngine {
                 }
                 if (!newQueryFlag) {
                     // fetch the complete content of the doc
-                    String docnoToFetch = rankingResultDocnos.get(Integer.parseInt(choice));
+                    String docnoToFetch = rankingResultDocnos.get(Integer.parseInt(choice) - 1);    // remember -1
                     String dateHierarchy = Utility.getDateFolderHierarchy(docnoToFetch);
                     String rawDocPath = indexBaseDirBackSlash + "raw/" + dateHierarchy + "/" + docnoToFetch;
                     System.out.println(getWholeContentFromGzipReader(rawDocPath));
