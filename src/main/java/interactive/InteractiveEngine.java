@@ -1,7 +1,9 @@
 package interactive;
 
 import common.Utility;
+import index.IndexGeneration;
 import ranking.RankingEngine;
+import snippet.SnippetEngine;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -57,7 +59,7 @@ public class InteractiveEngine {
                     idToDocnoMap, lexiconTermToId, invertedIndex);
             rankingResultDocnos.addAll(top10Docnos);
 
-
+            SnippetEngine snippetEngine = new SnippetEngine(query);
             for (int i = 1; i <= top10Docnos.size(); ++i) {
                 String docno = top10Docnos.get(i - 1);
                 String dateHierarchy = Utility.getDateFolderHierarchy(docno);
@@ -65,6 +67,8 @@ public class InteractiveEngine {
                 // TODO: generate the snippets
                 String queryBiasedSnippet = "Query-Biased Snippet";
                 String rawDocPath = indexBaseDirBackSlash + "raw/" + dateHierarchy + "/" + docno;
+                String rawDoc = getWholeContentFromGzipReader(rawDocPath);
+                queryBiasedSnippet = snippetEngine.getSnippet(rawDoc);
 
                 // get the headline from the metadata
                 String docMetadataPath = metadataPath + dateHierarchy + "/" + docno;
@@ -143,7 +147,7 @@ public class InteractiveEngine {
     }
 
 
-    private static String getWholeContentFromGzipReader(String filepath) throws IOException {
+    public static String getWholeContentFromGzipReader(String filepath) throws IOException {
         BufferedReader reader = Utility.getGzipReader(filepath);
         StringBuilder sb = new StringBuilder();
         List<String> lines = reader.lines().collect(Collectors.toList());
