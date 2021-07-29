@@ -55,9 +55,11 @@ public class SnippetEngine {
         List<Integer> questionPos = getAllPos(para, '?');
         List<Integer> exclamationPos = getAllPos(para, '!');
 
+        // merge the results. TODO: could optimize. 3-way merge, priorityQueue. worth it? only a few positions.
+        List<Integer> periodQuestionMerge = mergeSorted(periodPos, questionPos);
+        List<Integer> pos = mergeSorted(exclamationPos, periodQuestionMerge);
+        
         List<String> splitSentences = new ArrayList<>();
-        // TODO: merge the results
-        List<Integer> pos = new ArrayList<>();
         pos.add(-1);    // for the convenience to write code
         for (int i = 0; i < pos.size() - 1; ++i) {
             splitSentences.add(para.substring(pos.get(i) + 1, pos.get(i + 1) + 1)); // include "[.?!]"
@@ -85,6 +87,29 @@ public class SnippetEngine {
             res.add(pos);
             start = pos + 1;
             pos = para.indexOf(c, start);
+        }
+        return res;
+    }
+
+    private List<Integer> mergeSorted(List<Integer> lst1, List<Integer> lst2) {
+        List<Integer> res = new ArrayList<>();
+        int i = 0, j = 0;
+        while (i < lst1.size() && j < lst2.size()) {
+            int elem1 = lst1.get(i);
+            int elem2 = lst2.get(j);
+            if (elem1 < elem2) {
+                res.add(elem1);
+                ++i;
+            } else {
+                res.add(elem2);
+                ++j;
+            }
+        }
+        if (i < lst1.size()) {
+            res.addAll(lst1.subList(i, lst1.size()));   // [inclusive, exclusive)
+        }
+        if (j < lst2.size()) {
+            res.addAll(lst2.subList(j, lst2.size()));
         }
         return res;
     }
