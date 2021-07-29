@@ -7,13 +7,13 @@ import java.util.*;
 public class SnippetEngine {
 
     private final String query;
-    private final List<String> tokenizedQuery;
+    private final List<String> queryTokensList;
     private final Set<String> queryUniqueTerms;
 
     public SnippetEngine(String query) {
         this.query = query;
-        this.tokenizedQuery = IndexGeneration.extractAlphanumerics(query);
-        this.queryUniqueTerms = new HashSet<>(tokenizedQuery);
+        this.queryTokensList = IndexGeneration.extractAlphanumerics(query);
+        this.queryUniqueTerms = new HashSet<>(queryTokensList);
     }
 
     /**
@@ -111,7 +111,7 @@ public class SnippetEngine {
                 // tokenize it
                 List<String> tokensList = IndexGeneration.extractAlphanumerics(trimmed);
 
-                // TODO: calculate the score
+                // calculate the score
                 int score = calScore(tokensList);
                 // add 2 to the score for the first sentence; 1, if second; 0 otherwise.
                 if (num == 0) { // the first sentence in the doc
@@ -136,7 +136,7 @@ public class SnippetEngine {
      * Use a equal combination of l, c, d, k to derive a score value V.
      */
     private int calScore(List<String> sentenceTokensList) {
-        int c = 0, d = 0, k = 0;
+        int c = 0;
         Set<String> sentenceUniqueTerms = new HashSet<>();
         for (String term : sentenceTokensList) {
             if (queryUniqueTerms.contains(term)) {
@@ -144,11 +144,40 @@ public class SnippetEngine {
                 sentenceUniqueTerms.add(term);
             }
         }
-        d = sentenceUniqueTerms.size();
+        int d = sentenceUniqueTerms.size();
 
-        // TODO: calculate k
+        // calculate k
+        int k = calMaxContiguous(sentenceTokensList);
 
         return c + d + k;
+    }
+
+    /**
+     * Dynamic Programming:
+     * Similar to longest common subsequence (LCS).
+     * ref: https://en.wikipedia.org/wiki/Longest_common_subsequence_problem
+     * @param sentenceTokensList
+     * @return
+     */
+    private int calMaxContiguous(List<String> sentenceTokensList) {
+        int m = queryTokensList.size();
+        int n = sentenceTokensList.size();
+        int[][] dp = new int[m + 1][n + 1]; // default initialized value is 0
+
+        // initialize the first row and first col to 0. omitted because the default initialized value is 0.
+
+        // fill the dp chart horizontally
+        for (int i = 1; i <= m; ++i) {
+            for (int j = 1; j <= n; ++j) {
+                if (queryTokensList.get(i - 1).equals(sentenceTokensList.get(j - 1))) {
+                    dp[i][j] = dp[i - 1][j - 1] + 1;
+                } else {
+                    dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+                }
+            }
+        }
+
+        return dp[m][n];
     }
 
     private List<Integer> getAllPos(String para, char c) {
