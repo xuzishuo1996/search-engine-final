@@ -8,8 +8,6 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static common.Utility.getGzipReader;
-
 public class InteractiveEngine {
     private static final String NEW_QUERY_PROMPT_MSG = "Please enter a new query.";
     private static final String NEXT_STEP_PROMPT_MSG = "Please type in the number of a document to view, " +
@@ -19,8 +17,11 @@ public class InteractiveEngine {
 
     private static final int NANO_TO_SECOND = 1000000000;
 
+    private static final Set<String> RANK_NUMBERS = new HashSet<>(
+            Arrays.asList("1", "2", "3", "4", "5", "6", "7", "8", "9", "10"));
+
     // store the ranking results in case the user want to see the complete document
-    private static final Set<String> rankingResultDocnos = new HashSet<>(10);
+    private static final List<String> rankingResultDocnos = new ArrayList<>(10);
     private static final Scanner userInput = new Scanner(System.in);
 
     public static void main(String[] args) throws IOException {
@@ -109,27 +110,29 @@ public class InteractiveEngine {
 
             // the user want to see the complete content of a result, input is a docno
             if (!choice.equals("N")) {
-//                // TODO: remove it! only for test
-//                rankingResultDocnos.add("LA010189-0001");
+                boolean newQueryFlag = false;
 
-                while (!rankingResultDocnos.contains(choice)) {
+                while (!RANK_NUMBERS.contains(choice)) {
                     System.out.println(WRONG_DOCNO_MSG);
                     choice = userInput.nextLine().trim();
                     if (choice.equals("N")) {
+                        newQueryFlag = true;
                         break;
                     } else if (choice.equals("Q")) {
                         System.out.println(QUIT_MSG);
                         System.exit(0);
                     }
                 }
-                // fetch the complete content of the doc
-                String dateHierarchy = Utility.getDateFolderHierarchy(choice);
-                String rawDocPath = indexBaseDirBackSlash + "raw/" + dateHierarchy + "/" + choice;
-                System.out.println(getWholeContentFromGzipReader(rawDocPath));
+                if (!newQueryFlag) {
+                    // fetch the complete content of the doc
+                    String docnoToFetch = rankingResultDocnos.get(Integer.parseInt(choice));
+                    String dateHierarchy = Utility.getDateFolderHierarchy(docnoToFetch);
+                    String rawDocPath = indexBaseDirBackSlash + "raw/" + dateHierarchy + "/" + docnoToFetch;
+                    System.out.println(getWholeContentFromGzipReader(rawDocPath));
+                }
             } // else: new query, continue
         }
     }
-
 
 
     private static String getWholeContentFromGzipReader(String filepath) throws IOException {
