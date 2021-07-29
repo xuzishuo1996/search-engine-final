@@ -89,7 +89,7 @@ public class InteractiveEngine {
                     headline = metadata.substring(headlinePos).trim(); // not include a leading '\n'
                 }
 
-                System.out.printf("%d. %s (%s)\n%s (%s)\n", i,
+                System.out.printf("\n%d. %s (%s)\n%s (%s)\n", i,
                         headline, Utility.getNaturalDate(docno), queryBiasedSnippet, docno);
             }
 
