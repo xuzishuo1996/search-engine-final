@@ -62,10 +62,27 @@ public class SnippetEngine {
             return from;
         }
         int endPos = rawDoc.indexOf(endTag, startPos);
-        String contentWithPTag = rawDoc.substring(startPos + startTag.length(), endPos);
+        String contentWithPTag = rawDoc.substring(startPos + startTag.length(), endPos); // TODO: +1 for the '\n'?
 
-        // TODO: split the <P></P> tag within it.
-        String
+        // split the <P></P> tag within it.
+        // positions of the split point: multiple <P></P>s
+        List<Integer> posList = new ArrayList<>();
+        int stripLeadingNum = "<P>".length();
+        int stripTrailingNum = "</P>".length();
+
+        // the first <P> is at the start of contentWithPTag
+        int pos = 0;
+        while (pos != -1) {
+            posList.add(pos);
+            pos = contentWithPTag.indexOf("<P>", pos + stripLeadingNum);   // actually, could be pos + "<P>".length()
+        }
+
+        // split the sentences and calculate their scores
+        for (int i = 0; i < posList.size() - 1; ++i) {
+            String paraWithPTag = contentWithPTag.substring(posList.get(i), posList.get(i + 1));
+            String para = paraWithPTag.substring(stripLeadingNum, paraWithPTag.length() - stripTrailingNum); // also removes the '\n' before </P>
+            splitSentences(para, primitiveSentences, pq);
+        }
 
         return endPos;
     }
@@ -89,7 +106,7 @@ public class SnippetEngine {
         splitSentences.add(para.substring(pos.get(pos.size() - 1)) + 1);
 
         for (String s : splitSentences) {
-            String trimmed = s.trim();
+            String trimmed = s.trim();  // does not alter the primitive string
             if (!trimmed.isEmpty()) {
                 int num = primitiveSentences.size();
 
