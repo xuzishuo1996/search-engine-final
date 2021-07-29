@@ -64,11 +64,11 @@ public class InteractiveEngine {
                 String docno = top10Docnos.get(i - 1);
                 String dateHierarchy = Utility.getDateFolderHierarchy(docno);
 
-                // TODO: generate the snippets
-                String queryBiasedSnippet = "Query-Biased Snippet";
+                // generate the snippets
+                // String queryBiasedSnippet = "Query-Biased Snippet";
                 String rawDocPath = indexBaseDirBackSlash + "raw/" + dateHierarchy + "/" + docno;
                 String rawDoc = getWholeContentFromGzipReader(rawDocPath);
-                queryBiasedSnippet = snippetEngine.getSnippet(rawDoc);
+                String queryBiasedSnippet = snippetEngine.getSnippet(rawDoc);
 
                 // get the headline from the metadata
                 String docMetadataPath = metadataPath + dateHierarchy + "/" + docno;

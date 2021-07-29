@@ -94,10 +94,11 @@ public class SnippetEngine {
 
         // merge the results. TODO: could optimize. 3-way merge, priorityQueue. worth it? only a few positions.
         List<Integer> periodQuestionMerge = mergeSorted(periodPos, questionPos);
-        List<Integer> pos = mergeSorted(exclamationPos, periodQuestionMerge);
+        List<Integer> pos = new ArrayList<>();
+        pos.add(-1);    // for the convenience to write code
+        pos.addAll(mergeSorted(exclamationPos, periodQuestionMerge));
 
         List<String> splitSentences = new ArrayList<>();
-        pos.add(-1);    // for the convenience to write code
         for (int i = 0; i < pos.size() - 1; ++i) {
             splitSentences.add(para.substring(pos.get(i) + 1, pos.get(i + 1) + 1)); // +1: include "[.?!]"
         }
