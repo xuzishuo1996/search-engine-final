@@ -29,13 +29,14 @@ public class SnippetEngine {
         // pq: [score, sentence number pair]
         PriorityQueue<int[]> pq = new PriorityQueue<>((o1, o2) -> o2[0] - o1[0]);   // in descending order of score
 
-        int startPos = rawDoc.indexOf("<HEADLINE>");
-        int endPos = rawDoc.indexOf("</HEADLINE>");
-        String headlineWithPTag = rawDoc.substring(startPos + "<HEADLINE>".length(), endPos);
-        System.out.println(headlineWithPTag);
-        // TODO: split the <P></P> tag within it.
 
-        // TODO: <TEXT> <GRAPHIC>. may abstract the steps into a method
+        // extract from <HEADLINE>
+        int textStart = splitTags(rawDoc, 0, "<HEADLINE>", "</HEADLINE>", primitiveSentences, pq);
+        // extract from <TEXT>
+        int graphicStart = splitTags(rawDoc, textStart, "<TEXT>", "</TEXT>", primitiveSentences, pq);
+        // extract from <GRAPHIC>
+        splitTags(rawDoc, graphicStart, "<GRAPHIC>", "</GRAPHIC>", primitiveSentences, pq);
+
 
         // get result: use 2 sentences
         StringBuilder sb = new StringBuilder();
@@ -47,6 +48,23 @@ public class SnippetEngine {
             sb.append(primitiveSentences.get(pos));
         }
         return sb.toString();
+    }
+
+    private int splitTags(String rawDoc, int from, String startTag, String endTag,
+                          List<String> primitiveSentences,
+                          PriorityQueue<int[]> pq) {
+        int startPos = rawDoc.indexOf(startTag, from);
+        // this tag does not exist
+        if (startPos == -1) {
+            return from;
+        }
+        int endPos = rawDoc.indexOf(endTag, startPos);
+        String contentWithPTag = rawDoc.substring(startPos + startTag.length(), endPos);
+
+        // TODO: split the <P></P> tag within it.
+
+
+        return endPos;
     }
 
     private void splitSentences(String para, List<String> primitiveSentences,
