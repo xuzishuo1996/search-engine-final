@@ -1,9 +1,7 @@
 package snippet;
 
-import common.Utility;
 import index.IndexGeneration;
 
-import java.io.BufferedReader;
 import java.util.*;
 
 public class SnippetEngine {
@@ -71,7 +69,7 @@ public class SnippetEngine {
         int stripTrailingNum = "</P>".length();
 
         // the first <P> is at the start of contentWithPTag
-        int pos = 0;
+        int pos = 0;    // relative pos in contentWithPTag
         while (pos != -1) {
             posList.add(pos);
             pos = contentWithPTag.indexOf("<P>", pos + stripLeadingNum);   // actually, could be pos + "<P>".length()
@@ -110,15 +108,19 @@ public class SnippetEngine {
             if (!trimmed.isEmpty()) {
                 int num = primitiveSentences.size();
 
-                // TODO:
-                // TODO: tokenize it
+                // tokenize it
                 List<String> tokensList = IndexGeneration.extractAlphanumerics(trimmed);
                 // TODO: calculate the score
                 int score = 0;
-                // TODO: put it into the priority queue
+                // put it into the priority queue
                 pq.add(new int[]{score, num});
             }
         }
+    }
+
+    private int calScore(List<String> tokensList) {
+        
+        return 0;
     }
 
     private List<Integer> getAllPos(String para, char c) {
