@@ -28,6 +28,8 @@ public class InteractiveEngine {
         if (args.length != 1) {
             promptHelpMsg();
         }
+        System.out.println("Loading metadata. Please wait a moment...");
+
         String indexBaseDir = args[0];
         String indexBaseDirBackSlash = indexBaseDir.charAt(indexBaseDir.length() - 1) == '/' ?
                 indexBaseDir : indexBaseDir + '/';
@@ -42,7 +44,7 @@ public class InteractiveEngine {
         List<List<Integer>> invertedIndex = (List<List<Integer>>) Utility.deserialize(invertedIndexPath);
 
         while (true) {
-            System.out.println(NEW_QUERY_PROMPT_MSG);
+            System.out.println("\n" + NEW_QUERY_PROMPT_MSG);
             rankingResultDocnos.clear();
             String query = userInput.nextLine();    // excluding any line separator at the end.
 
@@ -91,15 +93,10 @@ public class InteractiveEngine {
             long endTime = System.nanoTime();
             long duration = endTime - startTime;
             double durationInSecond = (double) duration / (double) NANO_TO_SECOND;
-            System.out.printf("Retrieval took %s seconds\n", durationInSecond);
-
-            // TODO: remove it. for test only
-//            for (String docno : top10Docnos) {
-//                System.out.println(docno);
-//            }
+            System.out.printf("\nRetrieval took %s seconds\n", durationInSecond);
 
             // next prompt
-            System.out.println(NEXT_STEP_PROMPT_MSG);
+            System.out.println("\n" + NEXT_STEP_PROMPT_MSG);
             String choice = userInput.nextLine().trim();
 
             // quit;
@@ -108,9 +105,9 @@ public class InteractiveEngine {
                 System.exit(0);
             }
 
-            // the user want to see the complete content of a result, input is a docno
-            if (!choice.equals("N")) {
-                boolean newQueryFlag = false;
+            // the user want to see the complete content of a result, input is a ranking number within 1-10
+            boolean newQueryFlag = false;
+            while (!choice.equals("N")) {
 
                 while (!RANK_NUMBERS.contains(choice)) {
                     System.out.println(WRONG_DOCNO_MSG);
@@ -129,7 +126,18 @@ public class InteractiveEngine {
                     String dateHierarchy = Utility.getDateFolderHierarchy(docnoToFetch);
                     String rawDocPath = indexBaseDirBackSlash + "raw/" + dateHierarchy + "/" + docnoToFetch;
                     System.out.println(getWholeContentFromGzipReader(rawDocPath));
+
+                    // next prompt
+                    System.out.println("\n" + NEXT_STEP_PROMPT_MSG);
+                    choice = userInput.nextLine().trim();
+
+                    // quit;
+                    if (choice.equals("Q")) {
+                        System.out.println(QUIT_MSG);
+                        System.exit(0);
+                    }
                 }
+
             } // else: new query, continue
         }
     }
