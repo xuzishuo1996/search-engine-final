@@ -32,11 +32,17 @@ public class SnippetEngine {
         int endPos = rawDoc.indexOf("</HEADLINE>");
         String headlineWithPTag = rawDoc.substring(startPos + "<HEADLINE>".length(), endPos);
         System.out.println(headlineWithPTag);
+        // TODO: split the <P></P> tag within it.
 
-        // get result
+        // TODO: <TEXT> <GRAPHIC>. may abstract the steps into a method
+
+        // get result: use 2 sentences
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < 1; ++i) {
+        for (int i = 0; i < 2; ++i) {
             int pos = pq.poll().getPosInDoc();
+            if (i == 1) {
+                sb.append(" ");
+            }
             sb.append(primitiveSentences.get(pos));
         }
         return sb.toString();
@@ -45,14 +51,42 @@ public class SnippetEngine {
     private void splitSentences(String para, List<String> primitiveSentences,
                                 PriorityQueue<Sentence> pq) {
         // ref: https://blog.csdn.net/qy20115549/article/details/107400321
-        String[] splitSentences = para.split("[.?!]");
+        List<Integer> periodPos = getAllPos(para, '.');
+        List<Integer> questionPos = getAllPos(para, '?');
+        List<Integer> exclamationPos = getAllPos(para, '!');
+
+        List<String> splitSentences = new ArrayList<>();
+        // TODO: merge the results
+        List<Integer> pos = new ArrayList<>();
+        pos.add(-1);    // for the convenience to write code
+        for (int i = 0; i < pos.size() - 1; ++i) {
+            splitSentences.add(para.substring(pos.get(i) + 1, pos.get(i + 1) + 1)); // include "[.?!]"
+        }
+        splitSentences.add(para.substring(pos.get(pos.size() - 1)) + 1);
+
         for (String s : splitSentences) {
             String trimmed = s.trim();
             if (!trimmed.isEmpty()) {
                 int num = primitiveSentences.size();
 
+                // TODO:
+                // tokenize it
+                // calculate the score
+                // put it into the priority queue
             }
         }
+    }
+
+    private List<Integer> getAllPos(String para, char c) {
+        List<Integer> res = new ArrayList<>();
+        int start = 0;
+        int pos = para.indexOf(c, start);
+        while (pos != -1) {
+            res.add(pos);
+            start = pos + 1;
+            pos = para.indexOf(c, start);
+        }
+        return res;
     }
 
     class Sentence implements Comparable<Sentence> {
