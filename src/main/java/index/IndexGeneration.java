@@ -62,7 +62,7 @@ public class IndexGeneration {
     }
 
     public static List<String> extractAlphanumerics(String line) {
-        String[] split = line.split("[^a-zA-Z0-9]");
+        String[] split = line.split("[^a-zA-Z0-9]"); // original line does not change
         List<String> res = new ArrayList<>();
         for (String s : split) {
             if (!s.equals("")) {
@@ -74,7 +74,7 @@ public class IndexGeneration {
 
     // a line is an input query
     public static Map<String, Integer> createTermCntMapForQuery(String line) {
-        String[] split = line.split("[^a-zA-Z0-9]");
+        String[] split = line.split("[^a-zA-Z0-9]");  // original line does not change
         Map<String, Integer> termCntMap = new HashMap<>();
         for (String term : split) {
             if (!term.equals("")) {

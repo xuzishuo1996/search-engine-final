@@ -50,6 +50,9 @@ public class SnippetEngine {
         return sb.toString();
     }
 
+    /**
+     * split and scoring the contents within <HEADLINE>, <TEXT> and <GRAPHIC>
+     */
     private int splitTags(String rawDoc, int from, String startTag, String endTag,
                           List<String> primitiveSentences,
                           PriorityQueue<int[]> pq) {
@@ -62,7 +65,7 @@ public class SnippetEngine {
         String contentWithPTag = rawDoc.substring(startPos + startTag.length(), endPos);
 
         // TODO: split the <P></P> tag within it.
-
+        String
 
         return endPos;
     }
