@@ -42,8 +42,10 @@ public class SnippetEngine {
             if (i == 1) {
                 sb.append(" ");
             }
-            int pos = pq.poll()[1];
-            sb.append(primitiveSentences.get(pos));
+            if (!pq.isEmpty()) {
+                int pos = pq.poll()[1];
+                sb.append(primitiveSentences.get(pos));
+            }
         }
         return sb.toString();
     }
