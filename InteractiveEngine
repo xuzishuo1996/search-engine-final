@@ -1,5 +1,5 @@
 #!/bin/bash
 
 # args
-# 1. path to store metadata and raw dos
+# 1. path that stores metadata and raw dos
 java -cp target interactive.InteractiveEngine $1

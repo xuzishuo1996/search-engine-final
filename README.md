@@ -35,34 +35,18 @@ For example:
 $ ./IndexEngine /home/smucker/latimes.gz /home/smucker/latimes-index
 ```
 
-2) **RankingEngine**: rank the docs by BM25 algorithm and return 1000 (or less) related docs for each query.
+2) **InteractiveEngine**: the interactive interface. Users could type in queries. 
 
 Under the root of the project folder, execute:
 
 ```
-$ ./IndexEngine {base dir of index} {query file path} {file path to output ranking result}
+$ ./InteractiveEngine {path that stores metadata and raw docs}
 ```
 
 For example:
 
 ```
-$ ./RankingEngine /home/smucker/latimes-index /home/smucker/queries.txt /home/smucker/hw4-bm25-stem-smucker.txt
-```
-
-3) **EvaluationEngine**: process the docs, calculate and output the evaluation metrics to the console. 
-
-**Note**: Put the ranking results into {results dir path}, rename the result file as student1.results.
-
-Under the root of the project folder, execute:
-
-```
-$ ./EvaluationEngine {qrels file path} {results dir path} {index dir path}
-```
-
-For example:
-
-```
-$ ./EvaluationEngine /home/smucker/Desktop/msci720-hw/hw3-files/qrels/LA-only.trec8-401.450.minus416-423-437-444-447.txt /home/smucker/Desktop/msci720-hw/hw3-files/results-files/ /home/smucker/Desktop/msci720-hw/latime_index/
+$ ./InteractiveEngine /home/smucker/latimes.gz /home/smucker/latimes-index
 ```
 
 Or you can import the project into IDEA and run the code. You can set the command line arguments in the Run Configuration.
