@@ -84,6 +84,12 @@ public class SnippetEngine {
             String para = paraWithPTag.substring(stripLeadingNum, paraWithPTag.length() - stripTrailingNum); // also removes the '\n' before </P>
             splitSentences(para, primitiveSentences, pq);
         }
+        int lastPos = posList.get(posList.size() - 1);
+        if (lastPos < contentWithPTag.length()) {
+            String paraWithPTag = contentWithPTag.substring(lastPos);
+            String para = paraWithPTag.substring(stripLeadingNum, paraWithPTag.length() - stripTrailingNum); // also removes the '\n' before </P>
+            splitSentences(para, primitiveSentences, pq);
+        }
 
         return endPos;
     }
