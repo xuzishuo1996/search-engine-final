@@ -60,13 +60,14 @@ public class SnippetEngine {
             return from;
         }
         int endPos = rawDoc.indexOf(endTag, startPos);
-        String contentWithPTag = rawDoc.substring(startPos + startTag.length(), endPos); // TODO: +1 for the '\n'?
+        // +1 and -1: remove the '\n' after startTag and before closeTag
+        String contentWithPTag = rawDoc.substring(startPos + startTag.length() + 1, endPos - 1);
 
         // split the <P></P> tag within it.
         // positions of the split point: multiple <P></P>s
         List<Integer> posList = new ArrayList<>();
-        int stripLeadingNum = "<P>".length();
-        int stripTrailingNum = "</P>".length();
+        int stripLeadingNum = "<P>\n".length();
+        int stripTrailingNum = "\n</P>\n".length();
 
         // the first <P> is at the start of contentWithPTag
         int pos = 0;    // relative pos in contentWithPTag
