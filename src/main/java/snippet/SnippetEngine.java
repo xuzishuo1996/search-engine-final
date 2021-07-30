@@ -67,7 +67,7 @@ public class SnippetEngine {
         // positions of the split point: multiple <P></P>s
         List<Integer> posList = new ArrayList<>();
         int stripLeadingNum = "<P>\n".length();
-        int stripTrailingNum = "\n</P>\n".length();
+        int stripTrailingNum = "\n</P>".length();
 
         // the first <P> is at the start of contentWithPTag
         int pos = 0;    // relative pos in contentWithPTag
