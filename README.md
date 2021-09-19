@@ -1,14 +1,18 @@
-# MSCI 720 Search Engines - HW5
-
-Zishuo Xu
-
-20900288
+# Search Engine
 
 ### 1 Introduction
 
-This is part 5 of the series of homework to craft a simple search engine. We do not have a crawler. The compressed XML format data collection is provided.
+This project crafts a simple search engine for a static text collection in compressed XML format. It consists of text processing, indexing, ranking, evaluation, snippet generation sub-engines and the interactive user-interface.
 
-HW4 implements the interactive interface of the search engine. When the user types in a query, the search engine will return the top-10 results using BM25 ranking method and generate corresponding snippets. Then the user could choose to see the complete content of a returned result or type in new query.
+When the user types in a query, the search engine will return the top-10 results using BM25 ranking method and generate corresponding snippets. Then the user could choose to see the complete content of a returned result or type in new query. 
+
+The evaluation engine evaluates the effectiveness measure of the search engines, including precision, mean average precision (mAP) and normalized discounted cumulative gain (NDCG).
+
+Refer to the demos:
+
+https://drive.google.com/file/d/1IuyeDczkxBPLYwH2sYq5AhCTjDhDqbiO/view?usp=sharing
+
+https://drive.google.com/file/d/1SwgmvVxF6rRsrWbVE8dFs-7GiHh8TG5J/view?usp=sharing 
 
 ### 2 Build
 
